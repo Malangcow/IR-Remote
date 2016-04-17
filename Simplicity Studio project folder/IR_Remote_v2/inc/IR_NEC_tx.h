@@ -35,6 +35,27 @@ typedef enum
 //IR_NEC_TX_STATE_
 } IR_NEC_TX_STATE_t;
 
+typedef enum
+{
+  IR_NEC_TX_STATE_NEW_IDLE = 0,
+  IR_NEC_TX_STATE_NEW_LEADER_CODE_BURST,
+  IR_NEC_TX_STATE_NEW_LEADER_CODE_PAUSE,
+  IR_NEC_TX_STATE_NEW_DATA_BURST_1,
+  IR_NEC_TX_STATE_NEW_DATA_BURST_0,
+  IR_NEC_TX_STATE_NEW_DATA_PAUSE_1,
+  IR_NEC_TX_STATE_NEW_DATA_PAUSE_0,
+  IR_NEC_TX_STATE_NEW_TERMINATION_BURST
+//IR_NEC_TX_STATE_
+} IR_NEC_TX_STATE_NEW_t;
+
+typedef struct {
+	uint8_t Data[4];          // TODO: Magic number!!!
+	//uint8_t dataArraySize;
+	uint8_t byteIndex;
+	uint8_t bitIndex;
+	uint8_t loadedData;
+}IR_NEC_tx_buffer_t;
+
 typedef struct
 {
   pulse_t pulse;
