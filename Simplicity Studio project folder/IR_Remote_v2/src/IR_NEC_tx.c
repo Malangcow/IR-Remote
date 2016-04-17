@@ -328,11 +328,12 @@ void IR_NEC_tx_stateMachine_new(volatile IR_NEC_TX_STATE_NEW_t* pState) {
 		break;
 	case IR_NEC_TX_STATE_NEW_LEADER_CODE_BURST:
 		// Pulse burst
+		nPulse(342, &pulse);
 		++*pState;
 		break;
 	case IR_NEC_TX_STATE_NEW_LEADER_CODE_PAUSE:
 		// Setup Timer for 4.5 ms interrupt;
-
+		IR_NEC_pause(IR_NEC_PAUSE_LEADER_CODE);
 		// preload data
 		preloadedData = IR_NEC_tx_buffer_preload(&ir_nec_tx_buffer);
 
@@ -374,6 +375,7 @@ void IR_NEC_tx_stateMachine_new(volatile IR_NEC_TX_STATE_NEW_t* pState) {
 
 	case IR_NEC_TX_STATE_NEW_DATA_BURST_1:
 		// Pulse burst
+		nPulse(22, &pulse);
 #warning "Incomplete function IR_NEC_tx_stateMachine_new!"
 
 		*pState = IR_NEC_TX_STATE_NEW_DATA_PAUSE_1;
@@ -381,7 +383,7 @@ void IR_NEC_tx_stateMachine_new(volatile IR_NEC_TX_STATE_NEW_t* pState) {
 
 	case IR_NEC_TX_STATE_NEW_DATA_BURST_0:
 		// Pulse burst
-
+		nPulse(22, &pulse);
 		*pState = IR_NEC_TX_STATE_NEW_DATA_PAUSE_0;
 		break;
 
@@ -429,7 +431,7 @@ void IR_NEC_tx_stateMachine_new(volatile IR_NEC_TX_STATE_NEW_t* pState) {
 
 	case IR_NEC_TX_STATE_NEW_TERMINATION_BURST:
 		// Pulse burst
-
+		nPulse(22, &pulse);
 		*pState = IR_NEC_TX_STATE_NEW_IDLE;
 		break;
 
