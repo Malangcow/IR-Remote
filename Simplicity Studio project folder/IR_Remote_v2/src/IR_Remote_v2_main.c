@@ -11,7 +11,6 @@
 #include <LIMITS.H>
 #include "InitDevice.h"
 
-#include "nPulse.h"
 #include "atomic.h"
 #include "systick.h"
 #include "IR_NEC_tx.h"
@@ -27,7 +26,6 @@
 //-----------------------------------------------------------------------------
 // Global Variables
 //-----------------------------------------------------------------------------
-bool boolvar;
 
 //-----------------------------------------------------------------------------
 // Functions Forward Declarations
@@ -39,7 +37,6 @@ bool boolvar;
 int
 main(void)
 {
-  int n = 342;
   uint8_t SFRPAGE_save;
 
   // Call hardware initialization routine
@@ -53,35 +50,16 @@ main(void)
       uint32_t timeStamp;
 
       timeStamp = get_sys_tick();
-      //nPulse(n, &pulse);
-
-      // Test IR_NEC_tx functions
-      // IR_NEC_T3_setup();
-      // IR_NEC_tx_frame(0xAA, 0x55); // not working
-
       P1_B6 ^= 1; // For debug purpose
 
       if (P3_B1 == 0)
         {
           IR_NEC_tx_frame(0x01, 0x0E); // Remote code
 
-
-//          IR_NEC_T3_setup();
-//          nPulse(22, &pulse);
-
           while ((int32_t) (get_sys_tick() - timeStamp < (uint32_t) 200 << 16))
             ; // delay 200 ms
         }
 
-      // Delay using time stamp
-//      while ((int32_t) (get_sys_tick() - timeStamp < (uint32_t) 500 << 16)) // Every 500 ms
-//        {
-//          // Do nothing
-//          enter_power_mode(POWER_MODE_IDLE);
-//        }
-
-// $[Generated Run-time code]
-// [Generated Run-time code]$
     }
 }
 
