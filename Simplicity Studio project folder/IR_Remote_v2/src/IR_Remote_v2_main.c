@@ -66,6 +66,10 @@ main(void)
 
       button_handler(button);
 
+
+
+
+
       // Enter LPM
       enter_power_mode(POWER_MODE_SNOOZE);
 

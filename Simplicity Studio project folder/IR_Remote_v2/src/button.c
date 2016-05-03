@@ -45,6 +45,11 @@ button_handler(BUTTON_PRESSED_t b)
 
     }
 
+
+  // before enter LPM check if transmission is done
+  while (ir_nec_tx_state_new != IR_NEC_TX_STATE_NEW_IDLE)
+    ;
+
   // Port match event handled. Re-enable PM interrupt.
   SFRPAGE = 0x0;
   EIE1 |= EIE1_EMAT__BMASK;
