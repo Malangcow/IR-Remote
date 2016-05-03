@@ -44,14 +44,6 @@ TIMER16_4_enter__38kHz_Modulation_from_RESET(void);
 extern void
 TIMER_SETUP_0_enter__38kHz_Modulation_from_RESET(void);
 extern void
-PCA_0_enter__38kHz_Modulation_from_RESET(void);
-extern void
-PCACH_0_enter__38kHz_Modulation_from_RESET(void);
-extern void
-PCACH_1_enter__38kHz_Modulation_from_RESET(void);
-extern void
-UART_0_enter__38kHz_Modulation_from_RESET(void);
-extern void
 INTERRUPT_0_enter__38kHz_Modulation_from_RESET(void);
 // [Config(Per-Module Mode)Transition Prototypes]$
 

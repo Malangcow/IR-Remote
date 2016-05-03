@@ -50,10 +50,6 @@ enter__38kHz_Modulation_from_RESET(void)
   TIMER16_2_enter__38kHz_Modulation_from_RESET();
   TIMER16_4_enter__38kHz_Modulation_from_RESET();
   TIMER_SETUP_0_enter__38kHz_Modulation_from_RESET();
-  PCA_0_enter__38kHz_Modulation_from_RESET();
-  PCACH_0_enter__38kHz_Modulation_from_RESET();
-  PCACH_1_enter__38kHz_Modulation_from_RESET();
-  UART_0_enter__38kHz_Modulation_from_RESET();
   INTERRUPT_0_enter__38kHz_Modulation_from_RESET();
   // Restore the SFRPAGE
   SFRPAGE = SFRPAGE_save;
@@ -227,8 +223,7 @@ PORTS_1_enter__38kHz_Modulation_from_RESET(void)
   /*
    // B0 (Port 1 Bit 0 Latch) = HIGH (P1.0 is high. Set P1.0 to drive or
    //     float high.)
-   // B1 (Port 1 Bit 1 Latch) = HIGH (P1.1 is high. Set P1.1 to drive or
-   //     float high.)
+   // B1 (Port 1 Bit 1 Latch) = LOW (P1.1 is low. Set P1.1 to drive low.)
    // B2 (Port 1 Bit 2 Latch) = HIGH (P1.2 is high. Set P1.2 to drive or
    //     float high.)
    // B3 (Port 1 Bit 3 Latch) = HIGH (P1.3 is high. Set P1.3 to drive or
@@ -239,31 +234,33 @@ PORTS_1_enter__38kHz_Modulation_from_RESET(void)
    //     float high.)
    // B6 (Port 1 Bit 6 Latch) = HIGH (P1.6 is high. Set P1.6 to drive or
    //     float high.)
-   // B7 (Port 1 Bit 7 Latch) = LOW (P1.7 is low. Set P1.7 to drive low.)
+   // B7 (Port 1 Bit 7 Latch) = HIGH (P1.7 is high. Set P1.7 to drive or
+   //     float high.)
    */
-  P1 = P1_B0__HIGH | P1_B1__HIGH | P1_B2__HIGH | P1_B3__HIGH | P1_B4__HIGH
-      | P1_B5__HIGH | P1_B6__HIGH | P1_B7__LOW;
+  P1 = P1_B0__HIGH | P1_B1__LOW | P1_B2__HIGH | P1_B3__HIGH | P1_B4__HIGH
+      | P1_B5__HIGH | P1_B6__HIGH | P1_B7__HIGH;
   // [P1 - Port 1 Pin Latch]$
 
   // $[P1MDOUT - Port 1 Output Mode]
   /*
    // B0 (Port 1 Bit 0 Output Mode) = OPEN_DRAIN (P1.0 output is open-
    //     drain.)
-   // B1 (Port 1 Bit 1 Output Mode) = OPEN_DRAIN (P1.1 output is open-
-   //     drain.)
+   // B1 (Port 1 Bit 1 Output Mode) = PUSH_PULL (P1.1 output is push-pull.)
    // B2 (Port 1 Bit 2 Output Mode) = OPEN_DRAIN (P1.2 output is open-
    //     drain.)
    // B3 (Port 1 Bit 3 Output Mode) = OPEN_DRAIN (P1.3 output is open-
    //     drain.)
-   // B4 (Port 1 Bit 4 Output Mode) = PUSH_PULL (P1.4 output is push-pull.)
+   // B4 (Port 1 Bit 4 Output Mode) = OPEN_DRAIN (P1.4 output is open-
+   //     drain.)
    // B5 (Port 1 Bit 5 Output Mode) = OPEN_DRAIN (P1.5 output is open-
    //     drain.)
    // B6 (Port 1 Bit 6 Output Mode) = PUSH_PULL (P1.6 output is push-pull.)
-   // B7 (Port 1 Bit 7 Output Mode) = PUSH_PULL (P1.7 output is push-pull.)
+   // B7 (Port 1 Bit 7 Output Mode) = OPEN_DRAIN (P1.7 output is open-
+   //     drain.)
    */
-  P1MDOUT = P1MDOUT_B0__OPEN_DRAIN | P1MDOUT_B1__OPEN_DRAIN
-      | P1MDOUT_B2__OPEN_DRAIN | P1MDOUT_B3__OPEN_DRAIN | P1MDOUT_B4__PUSH_PULL
-      | P1MDOUT_B5__OPEN_DRAIN | P1MDOUT_B6__PUSH_PULL | P1MDOUT_B7__PUSH_PULL;
+  P1MDOUT = P1MDOUT_B0__OPEN_DRAIN | P1MDOUT_B1__PUSH_PULL
+      | P1MDOUT_B2__OPEN_DRAIN | P1MDOUT_B3__OPEN_DRAIN | P1MDOUT_B4__OPEN_DRAIN
+      | P1MDOUT_B5__OPEN_DRAIN | P1MDOUT_B6__PUSH_PULL | P1MDOUT_B7__OPEN_DRAIN;
   // [P1MDOUT - Port 1 Output Mode]$
 
   // $[P1MDIN - Port 1 Input Mode]
@@ -306,12 +303,12 @@ PORTS_1_enter__38kHz_Modulation_from_RESET(void)
    //     crossbar.)
    // B6 (Port 1 Bit 6 Skip) = SKIPPED (P1.6 pin is skipped by the
    //     crossbar.)
-   // B7 (Port 1 Bit 7 Skip) = SKIPPED (P1.7 pin is skipped by the
+   // B7 (Port 1 Bit 7 Skip) = NOT_SKIPPED (P1.7 pin is not skipped by the
    //     crossbar.)
    */
   P1SKIP = P1SKIP_B0__SKIPPED | P1SKIP_B1__SKIPPED | P1SKIP_B2__SKIPPED
       | P1SKIP_B3__SKIPPED | P1SKIP_B4__NOT_SKIPPED | P1SKIP_B5__NOT_SKIPPED
-      | P1SKIP_B6__SKIPPED | P1SKIP_B7__SKIPPED;
+      | P1SKIP_B6__SKIPPED | P1SKIP_B7__NOT_SKIPPED;
   // [P1SKIP - Port 1 Skip]$
 
   // $[P1MASK - Port 1 Mask]
@@ -368,7 +365,8 @@ PORTS_2_enter__38kHz_Modulation_from_RESET(void)
 {
   // $[P2 - Port 2 Pin Latch]
   /*
-   // B0 (Port 2 Bit 0 Latch) = LOW (P2.0 is low. Set P2.0 to drive low.)
+   // B0 (Port 2 Bit 0 Latch) = HIGH (P2.0 is high. Set P2.0 to drive or
+   //     float high.)
    // B1 (Port 2 Bit 1 Latch) = HIGH (P2.1 is high. Set P2.1 to drive or
    //     float high.)
    // B2 (Port 2 Bit 2 Latch) = HIGH (P2.2 is high. Set P2.2 to drive or
@@ -376,12 +374,13 @@ PORTS_2_enter__38kHz_Modulation_from_RESET(void)
    // B3 (Port 2 Bit 3 Latch) = HIGH (P2.3 is high. Set P2.3 to drive or
    //     float high.)
    */
-  P2 = P2_B0__LOW | P2_B1__HIGH | P2_B2__HIGH | P2_B3__HIGH;
+  P2 = P2_B0__HIGH | P2_B1__HIGH | P2_B2__HIGH | P2_B3__HIGH;
   // [P2 - Port 2 Pin Latch]$
 
   // $[P2MDOUT - Port 2 Output Mode]
   /*
-   // B0 (Port 2 Bit 0 Output Mode) = PUSH_PULL (P2.0 output is push-pull.)
+   // B0 (Port 2 Bit 0 Output Mode) = OPEN_DRAIN (P2.0 output is open-
+   //     drain.)
    // B1 (Port 2 Bit 1 Output Mode) = OPEN_DRAIN (P2.1 output is open-
    //     drain.)
    // B2 (Port 2 Bit 2 Output Mode) = OPEN_DRAIN (P2.2 output is open-
@@ -389,7 +388,7 @@ PORTS_2_enter__38kHz_Modulation_from_RESET(void)
    // B3 (Port 2 Bit 3 Output Mode) = OPEN_DRAIN (P2.3 output is open-
    //     drain.)
    */
-  P2MDOUT = P2MDOUT_B0__PUSH_PULL | P2MDOUT_B1__OPEN_DRAIN
+  P2MDOUT = P2MDOUT_B0__OPEN_DRAIN | P2MDOUT_B1__OPEN_DRAIN
       | P2MDOUT_B2__OPEN_DRAIN | P2MDOUT_B3__OPEN_DRAIN;
   // [P2MDOUT - Port 2 Output Mode]$
 
@@ -413,30 +412,30 @@ PORTS_2_enter__38kHz_Modulation_from_RESET(void)
   /*
    // B0 (Port 2 Bit 0 Skip) = SKIPPED (P2.0 pin is skipped by the
    //     crossbar.)
-   // B1 (Port 2 Bit 1 Skip) = NOT_SKIPPED (P2.1 pin is not skipped by the
+   // B1 (Port 2 Bit 1 Skip) = SKIPPED (P2.1 pin is skipped by the
    //     crossbar.)
-   // B2 (Port 2 Bit 2 Skip) = NOT_SKIPPED (P2.2 pin is not skipped by the
+   // B2 (Port 2 Bit 2 Skip) = SKIPPED (P2.2 pin is skipped by the
    //     crossbar.)
-   // B3 (Port 2 Bit 3 Skip) = NOT_SKIPPED (P2.3 pin is not skipped by the
+   // B3 (Port 2 Bit 3 Skip) = SKIPPED (P2.3 pin is skipped by the
    //     crossbar.)
    */
-  P2SKIP = P2SKIP_B0__SKIPPED | P2SKIP_B1__NOT_SKIPPED | P2SKIP_B2__NOT_SKIPPED
-      | P2SKIP_B3__NOT_SKIPPED;
+  P2SKIP = P2SKIP_B0__SKIPPED | P2SKIP_B1__SKIPPED | P2SKIP_B2__SKIPPED
+      | P2SKIP_B3__SKIPPED;
   // [P2SKIP - Port 2 Skip]$
 
   // $[P2MASK - Port 2 Mask]
   /*
-   // B0 (Port 2 Bit 0 Mask Value) = IGNORED (P2.0 pin logic value is
-   //     ignored and will not cause a port mismatch event.)
-   // B1 (Port 2 Bit 1 Mask Value) = IGNORED (P2.1 pin logic value is
-   //     ignored and will not cause a port mismatch event.)
-   // B2 (Port 2 Bit 2 Mask Value) = IGNORED (P2.2 pin logic value is
-   //     ignored and will not cause a port mismatch event.)
-   // B3 (Port 2 Bit 3 Mask Value) = IGNORED (P2.3 pin logic value is
-   //     ignored and will not cause a port mismatch event.)
+   // B0 (Port 2 Bit 0 Mask Value) = COMPARED (P2.0 pin logic value is
+   //     compared to P2MAT.0.)
+   // B1 (Port 2 Bit 1 Mask Value) = COMPARED (P2.1 pin logic value is
+   //     compared to P2MAT.1.)
+   // B2 (Port 2 Bit 2 Mask Value) = COMPARED (P2.2 pin logic value is
+   //     compared to P2MAT.2.)
+   // B3 (Port 2 Bit 3 Mask Value) = COMPARED (P2.3 pin logic value is
+   //     compared to P2MAT.3.)
    */
-  P2MASK = P2MASK_B0__IGNORED | P2MASK_B1__IGNORED | P2MASK_B2__IGNORED
-      | P2MASK_B3__IGNORED;
+  P2MASK = P2MASK_B0__COMPARED | P2MASK_B1__COMPARED | P2MASK_B2__COMPARED
+      | P2MASK_B3__COMPARED;
   // [P2MASK - Port 2 Mask]$
 
   // $[P2MAT - Port 2 Match]
@@ -481,39 +480,9 @@ PBCFG_0_enter__38kHz_Modulation_from_RESET(void)
   // [PRTDRV - Port Drive Strength]$
 
   // $[XBR0 - Port I/O Crossbar 0]
-  /*
-   // URT0E (UART0 I/O Enable) = ENABLED (UART0 TX0, RX0 routed to Port pins
-   //     P0.4 and P0.5.)
-   // SPI0E (SPI I/O Enable) = DISABLED (SPI I/O unavailable at Port pins.)
-   // SMB0E (SMB0 I/O Enable) = DISABLED (SMBus 0 I/O unavailable at Port
-   //     pins.)
-   // CP0E (Comparator0 Output Enable) = DISABLED (CP0 unavailable at Port
-   //     pin.)
-   // CP0AE (Comparator0 Asynchronous Output Enable) = DISABLED
-   //     (Asynchronous CP0 unavailable at Port pin.)
-   // CP1E (Comparator1 Output Enable) = DISABLED (CP1 unavailable at Port
-   //     pin.)
-   // CP1AE (Comparator1 Asynchronous Output Enable) = DISABLED
-   //     (Asynchronous CP1 unavailable at Port pin.)
-   // SYSCKE (SYSCLK Output Enable) = ENABLED (SYSCLK output routed to Port
-   //     pin.)
-   */
-  XBR0 = XBR0_URT0E__ENABLED | XBR0_SPI0E__DISABLED | XBR0_SMB0E__DISABLED
-      | XBR0_CP0E__DISABLED | XBR0_CP0AE__DISABLED | XBR0_CP1E__DISABLED
-      | XBR0_CP1AE__DISABLED | XBR0_SYSCKE__ENABLED;
   // [XBR0 - Port I/O Crossbar 0]$
 
   // $[XBR1 - Port I/O Crossbar 1]
-  /*
-   // PCA0ME (PCA Module I/O Enable) = CEX0 (CEX0 routed to Port pin.)
-   // ECIE (PCA0 External Counter Input Enable) = DISABLED (ECI unavailable
-   //     at Port pin.)
-   // T0E (T0 Enable) = DISABLED (T0 unavailable at Port pin.)
-   // T1E (T1 Enable) = DISABLED (T1 unavailable at Port pin.)
-   // T2E (T2 Enable) = DISABLED (T2 unavailable at Port pin.)
-   */
-  XBR1 = XBR1_PCA0ME__CEX0 | XBR1_ECIE__DISABLED | XBR1_T0E__DISABLED
-      | XBR1_T1E__DISABLED | XBR1_T2E__DISABLED;
   // [XBR1 - Port I/O Crossbar 1]$
 
 }
@@ -721,8 +690,8 @@ INTERRUPT_0_enter__38kHz_Modulation_from_RESET(void)
    //     interrupts.)
    // ECP1 (Comparator1 (CP1) Interrupt Enable) = DISABLED (Disable CP1
    //     interrupts.)
-   // EMAT (Port Match Interrupts Enable) = DISABLED (Disable all Port Match
-   //     interrupts.)
+   // EMAT (Port Match Interrupts Enable) = ENABLED (Enable interrupt
+   //     requests generated by a Port Match.)
    // EPCA0 (Programmable Counter Array (PCA0) Interrupt Enable) = DISABLED
    //     (Disable all PCA0 interrupts.)
    // ESMB0 (SMBus (SMB0) Interrupt Enable) = DISABLED (Disable all SMB0
@@ -731,7 +700,7 @@ INTERRUPT_0_enter__38kHz_Modulation_from_RESET(void)
    //     generated by the TF3L or TF3H flags.)
    */
   EIE1 = EIE1_EADC0__DISABLED | EIE1_EWADC0__DISABLED | EIE1_ECP0__DISABLED
-      | EIE1_ECP1__DISABLED | EIE1_EMAT__DISABLED | EIE1_EPCA0__DISABLED
+      | EIE1_ECP1__DISABLED | EIE1_EMAT__ENABLED | EIE1_EPCA0__DISABLED
       | EIE1_ESMB0__DISABLED | EIE1_ET3__ENABLED;
   // [EIE1 - Extended Interrupt Enable 1]$
 

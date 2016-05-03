@@ -16,7 +16,11 @@
  * Configuration
  *
  */
-#define IR_TX_PIN P2_B0
+
+/**
+ * @brief IR Tx pin
+ */
+#define IR_TX_PIN P1_B1
 
 #define IR_NEC_MOD_FREQ 38000u
 #define IR_NEC_TIMER_IRQ_FREQ (IR_NEC_MOD_FREQ * 3ul)

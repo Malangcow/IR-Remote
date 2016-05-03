@@ -12,6 +12,8 @@
 #include "sleep.h"
 #include "atomic.h"
 
+
+
 /**
  * @brief Flag variable for IR_NEC_pause function.
  */
@@ -308,7 +310,6 @@ IR_NEC_pause(IR_NEC_PAUSE_t pauseType)
 uint8_t
 IR_NEC_tx_buffer_preload(volatile IR_NEC_tx_buffer_v3_t * buffer) reentrant
 {
-#warning  "Not tested"
   uint8_t index_temp;
   uint8_t byteIndex;
   uint8_t data_temp;

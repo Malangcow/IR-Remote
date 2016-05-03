@@ -13,6 +13,7 @@
 //#define SYS_TICK_FREQ   1000L
 //#define SYS_TICK_TIMER_FREQ SYSCLK_SPEED
 
+#include <si_toolchain.h>
 #include <SI_EFM8BB2_Register_Enums.h>
 
 #endif /* BOARD_CONF_H_ */

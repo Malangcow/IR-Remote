@@ -14,6 +14,7 @@
 #include "systick.h"
 #include "sleep.h"
 #include "IR_NEC_tx.h"
+#include "button.h"
 
 //-----------------------------------------------------------------------------
 // TIMER2_ISR
@@ -28,7 +29,7 @@ SI_INTERRUPT (TIMER2_ISR, TIMER2_IRQn)
 {
   // Clear T2 high Interrupt Flag
   TMR2CN0_TF2H = 0;
-  P1_B7 ^= 1;
+  // P1_B7 ^= 1;
   ++_sys_tick;
 
 }
@@ -59,7 +60,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
       switch (_intCnt_temp)
         {
       case 0:
-        P2_B0 = 1;
+        IR_TX_PIN = 1;
         if (pulse.count > 0)
           { // pulse start, decrease counter
             --pulse.count;
@@ -67,7 +68,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
         ++_intCnt_temp;
         break;
       case 1:
-        P2_B0 = 0;
+        IR_TX_PIN = 0;
         ++_intCnt_temp;
         break;
       case 2:
@@ -106,7 +107,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
         // Initial value: 56349
 
         SFRPAGE = 0x10;
-        TMR3CN0 = 0; // Stop and resets timer. This also make T3XCLK SYSCLK/12
+        TMR3CN0 = 0;   // Stop and resets timer. This also make T3XCLK SYSCLK/12
         // CLK source EXTCLK, SYSCLK/12
         CKCON0 &= ~(CKCON0_T3MH__BMASK | CKCON0_T3ML__BMASK);
 
@@ -119,7 +120,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
         //TMR3RLH = 0;
         //TMR3RLL = 0;
 
-        TMR3CN0 |= TMR3CN0_TR3__RUN; // Run Timer
+        TMR3CN0 |= TMR3CN0_TR3__RUN;            // Run Timer
 
         // Renew state
         ir_nec_tx_state_new = IR_NEC_TX_STATE_NEW_LEADER_CODE_PAUSE;
@@ -164,7 +165,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
           //    EIP1H |= EIP1H_PHT3__HIGH; // T3 priority: 3(highest)
           //    EIP1 |= EIP1_PT3__HIGH;
 
-          TMR3CN0 |= TMR3CN0_TR3__RUN; // Run Timer
+          TMR3CN0 |= TMR3CN0_TR3__RUN;                // Run Timer
 
           // 22 pulses
           if (pulse.isActive == 0)
@@ -186,7 +187,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
         // T CLK: SYSCLK
         // Initial value: 24595
         SFRPAGE = 0x10;
-        TMR3CN0 = 0; // Stop and resets timer.
+        TMR3CN0 = 0;            // Stop and resets timer.
 
         // CLK source, SYSCLK
         CKCON0 |= CKCON0_T3MH__EXTERNAL_CLOCK | CKCON0_T3ML__EXTERNAL_CLOCK;
@@ -220,7 +221,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
         // T CLK: SYSCLK
         // Initial value: 52158
         SFRPAGE = 0x10;
-        TMR3CN0 = 0; // Stop and resets timer.
+        TMR3CN0 = 0;            // Stop and resets timer.
 
         // CLK source, SYSCLK
         CKCON0 |= CKCON0_T3MH__EXTERNAL_CLOCK | CKCON0_T3ML__EXTERNAL_CLOCK;
@@ -270,7 +271,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
           TMR3H = 0xFF;
           TMR3L = 0xFF;
 
-          TMR3CN0 |= TMR3CN0_TR3__RUN; // Run Timer
+          TMR3CN0 |= TMR3CN0_TR3__RUN;                // Run Timer
 
           // 22 pulses
           if (pulse.isActive == 0)
@@ -301,7 +302,7 @@ SI_INTERRUPT (TIMER3_ISR, TIMER3_IRQn)
       case IR_NEC_TX_STATE_NEW_TERMINATION_BURST:
         // Termination burst sent. Now idle mode
         SFRPAGE = 0x10;
-        TMR3CN0 = 0; // Stop and resets Timer
+        TMR3CN0 = 0;            // Stop and resets Timer
 
         ir_nec_tx_state_new = IR_NEC_TX_STATE_NEW_IDLE;
 
@@ -328,3 +329,34 @@ SI_INTERRUPT (TIMER4_ISR, TIMER4_IRQn)
 {
   TMR4CN0_TF4H = 0;
 } // of TIMER4_ISR
+//-----------------------------------------------------------------------------
+// PMATCH_ISR
+//-----------------------------------------------------------------------------
+//
+// PMATCH ISR Content goes here. Remember to clear flag bits:
+
+//
+//-----------------------------------------------------------------------------
+SI_INTERRUPT (PMATCH_ISR, PMATCH_IRQn)
+{
+  // Mismatch event occurred
+
+  // Check port
+  if (STOP_BUTTON == 0)
+    button = BUTTON_PRESSED_STOP_BUTTON;
+  else if(TIME_BUTTON == 0)
+    button = BUTTON_PRESSED_TIME_BUTTON;
+  else if(DIRECTION_BUTTON == 0)
+    button = BUTTON_PRESSED_DIRECTION_BUTTON;
+  else if(SLEEP_WIND_BUTTON == 0)
+    button = BUTTON_PRESSED_SLEEP_WIND_BUTTON;
+  else if(WIND_POWER_BUTTON == 0)
+    button = BUTTON_PRESSED_WIND_POWER_BUTTON;
+  else
+    button = BUTTON_PRESSED_NONE;
+
+  // Disable Port Match interrupts to prevent multiple interrupts from
+  // occurring while the switches are pressed
+  EIE1 &= ~EIE1_EMAT__BMASK;
+}
+
